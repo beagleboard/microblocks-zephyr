@@ -1,0 +1,7 @@
+mainmenu "Microblocks Smallvm"
+
+module = SMALLVM
+module-str = smallvm
+source "subsys/logging/Kconfig.template.log_config"
+
+source "Kconfig.zephyr"

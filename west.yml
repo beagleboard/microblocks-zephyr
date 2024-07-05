@@ -1,0 +1,31 @@
+# Copyright (c) 2024 Ayush Singh <ayush@beagleboard.org>
+# SPDX-License-Identifier: Apache-2.0
+
+manifest:
+  self:
+    west-commands: scripts/west-commands.yml
+
+  remotes:
+    - name: ayush
+      url-base: https://openbeagle.org/ayush1325
+
+  projects:
+    - name: zephyr
+      remote: ayush
+      revision: microblocks
+      import:
+        name-allowlist:
+          - hal_ti
+          - cmsis
+    - name: Arduino-Core-Zephyr
+      path: modules/lib/Arduino-Zephyr-API
+      revision: microblocks
+      url: https://github.com/Ayush1325/gsoc-2022-arduino-core
+    - name: ArduinoCore-API
+      path: modules/lib/ArduinoCore-API
+      revision: master
+      url: https://github.com/arduino/ArduinoCore-API
+    - name: MicroBlocks
+      path: modules/microblocks
+      revision: dev
+      url: https://bitbucket.org/john_maloney/smallvm.git

@@ -1,0 +1,17 @@
+image: zephyrprojectrtos/zephyr-build:v0.26.13
+
+build:
+  stage: build
+  before_script:
+    - rm -rf ../.west
+    - west init -l .
+    - west update
+    - ln -srf ../modules/lib/ArduinoCore-API/api ../modules/lib/Arduino-Zephyr-API/cores/arduino/.
+    - west zephyr-export
+    - pip3 install -r ../zephyr/scripts/requirements-base.txt
+  script:
+    - source ../zephyr/zephyr-env.sh
+    - west build -b beagleconnect_freedom . -p
+  artifacts:
+    paths:
+      - build/zephyr/zephyr.bin
