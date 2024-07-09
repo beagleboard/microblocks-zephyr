@@ -8,13 +8,13 @@
 	partitions {
 		/* Allocate 128 KiB for microblocks image */
 		slot_partition: partition@0 {
-  		label = "image-0";
-      reg = <0x00000000 0x0001F400>;
+			label = "image-0";
+			reg = <0x00000000 0x0001F400>;
 		};
 
 		/* Allocate 568 KiB for persistance */
 		persist_partition: partition@1F400 {
-      reg = <0x0001F400 0x0008e000>;
+			reg = <0x0001F400 0x0008e000>;
 		};
 	};
 };
