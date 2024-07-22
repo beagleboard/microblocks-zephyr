@@ -3,29 +3,10 @@
 
 manifest:
   self:
-    west-commands: scripts/west-commands.yml
-
-  remotes:
-    - name: ayush
-      url-base: https://openbeagle.org/ayush1325
+    import: west_base.yml
 
   projects:
-    - name: zephyr
-      remote: ayush
-      revision: microblocks
-      import:
-        name-allowlist:
-          - hal_ti
-          - cmsis
-    - name: Arduino-Core-Zephyr
-      path: modules/lib/Arduino-Zephyr-API
-      revision: microblocks
-      url: https://github.com/Ayush1325/gsoc-2022-arduino-core
-    - name: ArduinoCore-API
-      path: modules/lib/ArduinoCore-API
-      revision: master
-      url: https://github.com/arduino/ArduinoCore-API
-    - name: MicroBlocks
+    - name: smallvm
       path: modules/microblocks
       revision: dev
-      url: https://bitbucket.org/john_maloney/smallvm.git
+      url: https://bitbucket.org/john_maloney/smallvm

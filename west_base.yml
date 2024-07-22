@@ -1,0 +1,27 @@
+# Copyright (c) 2024 Ayush Singh <ayush@beagleboard.org>
+# SPDX-License-Identifier: Apache-2.0
+
+manifest:
+  self:
+    west-commands: scripts/west-commands.yml
+
+  remotes:
+    - name: zephyrproject-rtos
+      url-base: https://github.com/zephyrproject-rtos
+
+  projects:
+    - name: zephyr
+      remote: zephyrproject-rtos
+      revision: pull/73724/head
+      import:
+        name-allowlist:
+          - hal_ti
+          - cmsis
+    - name: gsoc-2022-arduino-core
+      remote: zephyrproject-rtos
+      path: modules/lib/Arduino-Zephyr-API
+      revision: pull/99/head
+    - name: ArduinoCore-API
+      path: modules/lib/ArduinoCore-API
+      revision: master
+      url: https://github.com/arduino/ArduinoCore-API
