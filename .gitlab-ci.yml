@@ -1,13 +1,13 @@
 default:
   image: zephyrprojectrtos/zephyr-build:v0.26.13
   after_script:
-    - cp ../modules/microblocks/gp/runtime/versions versions
-    - xz -vc build/zephyr/zephyr.bin > microblocks.bin.xz
+    - mkdir ${CI_JOB_NAME}
+    - cp ../modules/microblocks/gp/runtime/versions ${CI_JOB_NAME}/versions
+    - xz -vc build/zephyr/zephyr.bin > ${CI_JOB_NAME}/microblocks.bin.xz
   artifacts:
-    name: "microblocks-${CI_PIPELINE_NAME}"
+    name: "microblocks-${CI_JOB_NAME}"
     paths:
-      - microblocks.bin.xz
-      - versions
+      - ${CI_JOB_NAME}/*
 
 dev:
   stage: build
@@ -51,13 +51,15 @@ stable:
     - west build -b beagleconnect_freedom . -p
 
 
-deploy:stable:
+deploy:
   inherit:
     default: false
   stage: deploy
   image: curlimages/curl:latest
-  dependencies:
-    - stable
   script:
-    - VM=$(cat versions | grep VM | awk '{print $2}')
-    - 'curl --fail-with-body --header "JOB-TOKEN: $CI_JOB_TOKEN" --upload-file microblocks.bin.xz ${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/stable/${VM}/microblocks.bin.xz'
+    - VM=$(cat dev/versions | grep VM | awk '{print $2}')
+    - 'curl --fail-with-body --header "JOB-TOKEN: $CI_JOB_TOKEN" --upload-file dev/microblocks.bin.xz ${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/dev/${VM}/microblocks.bin.xz'
+    - VM=$(cat pilot/versions | grep VM | awk '{print $2}')
+    - 'curl --fail-with-body --header "JOB-TOKEN: $CI_JOB_TOKEN" --upload-file pilot/microblocks.bin.xz ${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/pilot/${VM}/microblocks.bin.xz'
+    - VM=$(cat stable/versions | grep VM | awk '{print $2}')
+    - 'curl --fail-with-body --header "JOB-TOKEN: $CI_JOB_TOKEN" --upload-file stable/microblocks.bin.xz ${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/stable/${VM}/microblocks.bin.xz'
