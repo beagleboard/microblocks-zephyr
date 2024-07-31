@@ -1,0 +1,12 @@
+# Copyright (c) 2024 Ayush Singh <ayush@beagleboard.org>
+# SPDX-License-Identifier: Apache-2.0
+
+manifest:
+  self:
+    import: west_base.yml
+
+  projects:
+    - name: smallvm
+      path: modules/microblocks
+      revision: stable
+      url: https://bitbucket.org/john_maloney/smallvm

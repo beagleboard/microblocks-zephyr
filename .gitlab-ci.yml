@@ -1,9 +1,7 @@
 default:
   image: zephyrprojectrtos/zephyr-build:v0.26.13
-  before_script:
-    - rm -rf ../.west
   after_script:
-    - xz - v build/zephyr/zephyr.bin
+    - xz -v build/zephyr/zephyr.bin
   artifacts:
     paths:
       - build/zephyr/zephyr.bin.xz
@@ -11,6 +9,7 @@ default:
 build-dev:
   stage: build
   before_script:
+    - rm -rf ../.west
     - west init -l .
     - west update
     - ln -srf ../modules/lib/ArduinoCore-API/api ../modules/lib/Arduino-Zephyr-API/cores/arduino/.
@@ -20,10 +19,26 @@ build-dev:
     - source ../zephyr/zephyr-env.sh
     - west build -b beagleconnect_freedom . -p
 
+
 build-pilot:
   stage: build
   before_script:
+    - rm -rf ../.west
     - west init -l --mf west_pilot.yml .
+    - west update
+    - ln -srf ../modules/lib/ArduinoCore-API/api ../modules/lib/Arduino-Zephyr-API/cores/arduino/.
+    - west zephyr-export
+    - pip3 install -r ../zephyr/scripts/requirements-base.txt
+  script:
+    - source ../zephyr/zephyr-env.sh
+    - west build -b beagleconnect_freedom . -p
+
+
+build-stable:
+  stage: build
+  before_script:
+    - rm -rf ../.west
+    - west init -l --mf west_stable.yml .
     - west update
     - ln -srf ../modules/lib/ArduinoCore-API/api ../modules/lib/Arduino-Zephyr-API/cores/arduino/.
     - west zephyr-export
