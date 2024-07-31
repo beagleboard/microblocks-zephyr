@@ -1,12 +1,15 @@
 default:
   image: zephyrprojectrtos/zephyr-build:v0.26.13
   after_script:
-    - xz -v build/zephyr/zephyr.bin
+    - cp ../modules/microblocks/gp/runtime/versions versions
+    - xz -vc build/zephyr/zephyr.bin > microblocks.bin.xz
   artifacts:
+    name: "microblocks-${CI_PIPELINE_NAME}"
     paths:
-      - build/zephyr/zephyr.bin.xz
+      - microblocks.bin.xz
+      - versions
 
-build-dev:
+dev:
   stage: build
   before_script:
     - rm -rf ../.west
@@ -20,7 +23,7 @@ build-dev:
     - west build -b beagleconnect_freedom . -p
 
 
-build-pilot:
+pilot:
   stage: build
   before_script:
     - rm -rf ../.west
@@ -34,7 +37,7 @@ build-pilot:
     - west build -b beagleconnect_freedom . -p
 
 
-build-stable:
+stable:
   stage: build
   before_script:
     - rm -rf ../.west
@@ -46,3 +49,15 @@ build-stable:
   script:
     - source ../zephyr/zephyr-env.sh
     - west build -b beagleconnect_freedom . -p
+
+
+deploy:stable:
+  inherit:
+    default: false
+  stage: deploy
+  image: curlimages/curl:latest
+  dependencies:
+    - stable
+  script:
+    - VM=$(cat versions | grep VM | awk '{print $2}')
+    - 'curl --fail-with-body --header "JOB-TOKEN: $CI_JOB_TOKEN" --upload-file microblocks.bin.xz ${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/stable/${VM}/microblocks.bin.xz'
