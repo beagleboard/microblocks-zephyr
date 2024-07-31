@@ -12,7 +12,7 @@ manifest:
   projects:
     - name: zephyr
       remote: zephyrproject-rtos
-      revision: pull/73724/head
+      revision: main
       import:
         name-allowlist:
           - hal_ti
