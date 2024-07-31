@@ -2,9 +2,11 @@ default:
   image: zephyrprojectrtos/zephyr-build:v0.26.13
   before_script:
     - rm -rf ../.west
+  after_script:
+    - xz - v build/zephyr/zephyr.bin
   artifacts:
     paths:
-      - build/zephyr/zephyr.bin
+      - build/zephyr/zephyr.bin.xz
 
 build-dev:
   stage: build
