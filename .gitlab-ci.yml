@@ -1,3 +1,8 @@
+stages:
+  - build
+  - deploy
+  - release
+
 default:
   image: zephyrprojectrtos/zephyr-build:v0.26.13
   after_script:
@@ -21,7 +26,6 @@ dev:
   script:
     - source ../zephyr/zephyr-env.sh
     - west build -b beagleconnect_freedom . -p
-
 
 pilot:
   stage: build
@@ -63,3 +67,19 @@ deploy:
     - 'curl --fail-with-body --header "JOB-TOKEN: $CI_JOB_TOKEN" --upload-file pilot/microblocks.bin.xz ${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/pilot/${VM}/microblocks.bin.xz'
     - VM=$(cat stable/versions | grep VM | awk '{print $2}')
     - 'curl --fail-with-body --header "JOB-TOKEN: $CI_JOB_TOKEN" --upload-file stable/microblocks.bin.xz ${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/stable/${VM}/microblocks.bin.xz'
+
+release:
+  stage: release
+  image: registry.gitlab.com/gitlab-org/release-cli:latest
+  script:
+    - echo "running release_job for $CI_COMMIT_TAG"
+  rules:
+    - if: $CI_COMMIT_TAG
+  release:
+    tag_name: $CI_COMMIT_TAG
+    name: 'Release $CI_COMMIT_TAG'
+    description: 'Latest MicroBlocks stable firmware'
+    assets:
+      links:
+        - name: 'MicroBlocks Firmware for BeagleConnect Freedom'
+          url: '${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/stable/${CI_COMMIT_TAG}/microblocks.bin.xz'
