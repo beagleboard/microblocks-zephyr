@@ -20,7 +20,7 @@ manifest:
     - name: gsoc-2022-arduino-core
       remote: zephyrproject-rtos
       path: modules/lib/Arduino-Zephyr-API
-      revision: pull/99/head
+      revision: next
     - name: ArduinoCore-API
       path: modules/lib/ArduinoCore-API
       revision: master
