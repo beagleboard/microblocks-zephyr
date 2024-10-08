@@ -1,7 +1,6 @@
 stages:
   - build
   - deploy
-  - release
 
 .build:
   script:
@@ -36,6 +35,8 @@ pilot:
 
 stable:
   stage: build
+  rules:
+    - if: $CI_COMMIT_TAG
   extends: .build
 
 deploy:
@@ -48,18 +49,18 @@ deploy:
     - 'curl --fail-with-body --header "JOB-TOKEN: $CI_JOB_TOKEN" --upload-file dev/microblocks.bin.xz ${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/dev/${VM}/microblocks.bin.xz'
     - VM=$(cat pilot/versions | grep VM | awk '{print $2}')
     - 'curl --fail-with-body --header "JOB-TOKEN: $CI_JOB_TOKEN" --upload-file pilot/microblocks.bin.xz ${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/pilot/${VM}/microblocks.bin.xz'
-    - VM=$(cat stable/versions | grep VM | awk '{print $2}')
-    - 'curl --fail-with-body --header "JOB-TOKEN: $CI_JOB_TOKEN" --upload-file stable/microblocks.bin.xz ${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/stable/${VM}/microblocks.bin.xz'
 
 release:
   inherit:
     default: false
   image: registry.gitlab.com/gitlab-org/release-cli:latest
-  stage: release
+  stage: deploy
   rules:
     - if: $CI_COMMIT_TAG
   script:
     - echo "running release_job for $CI_COMMIT_TAG"
+    - VM=$(cat stable/versions | grep VM | awk '{print $2}')
+    - 'curl --fail-with-body --header "JOB-TOKEN: $CI_JOB_TOKEN" --upload-file stable/microblocks.bin.xz ${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/stable/${VM}/microblocks.bin.xz'
   release:
     tag_name: $CI_COMMIT_TAG
     name: 'MicroBlocks VM $CI_COMMIT_TAG'
