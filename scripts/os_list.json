@@ -1,0 +1,12 @@
+[
+	{
+		"name": "MicroBlocks (Testing)",
+		"description": "MicroBlocks Dev and Pilot Builds",
+		"icon": "https://microblocks.fun/assets/img/logos/MicroBlocks-white.svg",
+		"flasher": "BeagleConnectFreedom",
+		"devices": [
+			"beagleconnect-freedom"
+		],
+		"subitems_url": "https://openbeagle.org/api/v4/projects/809/packages/generic/os_list/testing/os_list.json"
+	}
+]
