@@ -15,6 +15,10 @@ jobs:
         board: [beagleconnect_freedom]
     name: Build Artifacts - MicroBlocks ${{ matrix.version }} for ${{ matrix.board }}
     runs-on: ubuntu-22.04
+    env:
+      OS_LIST_NAME: "MicroBlocks ${{ matrix.version }}"
+      OS_LIST_DESC: "MicroBlocks is a blocks programming language for physical computing inspired by Scratch."
+      OS_LIST_ICON: "https://microblocks.fun/assets/img/logos/MicroBlocks-white.svg"
     steps:
     - name: Checkout
       uses: actions/checkout@v4
@@ -52,3 +56,20 @@ jobs:
         tag_name: continuous-release
         body: Continuous Dev and Pilot builds of MicroBlocks
         files: microblocks_*.bin
+
+    - name: Generate OS List
+      run: |
+        export VM=$(cat modules/microblocks/gp/runtime/versions | grep VM | awk '{print $2}')
+        export URL="https://github.com/beagleboard/microblocks-zephyr/releases/download/continuous-release/microblocks_beagleconnect_freedom_dev_${VM}.bin"
+        export SHA=$(sha256sum microblocks_${{ matrix.board }}_${{ matrix.version }}_${VM}.bin | cut -d " " -f 1)
+        export RELEASE_DATE=$(date +"%Y-%m-%d")
+        jq -n '[ .name = env.OS_LIST_NAME | .description = env.OS_LIST_DESC | .icon = env.OS_LIST_ICON | .devices = [ "${{ matrix.board }}" ] | .tags = [ "education" ] | .url = env.URL | .image_download_sha256 = env.SHA | .release_date = env.RELEASE_DATE ]' > os_list_${{ matrix.version }}.json
+
+    - name: OS List Generation
+      uses: softprops/action-gh-release@v2
+      with:
+        prerelease: true
+        name: OS List File
+        tag_name: os-list
+        body: OS List Files for use with BeagleBoard Imaging Utility
+        files: os_list_${{ matrix.version }}.json
