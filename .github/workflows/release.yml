@@ -13,7 +13,6 @@ jobs:
     name: Build Artifacts - MicroBlocks stable for ${{ matrix.board }}
     runs-on: ubuntu-22.04
     env:
-      OS_LIST_NAME: "MicroBlocks stable"
       OS_LIST_DESC: "MicroBlocks is a blocks programming language for physical computing inspired by Scratch."
       OS_LIST_ICON: "https://microblocks.fun/assets/img/logos/MicroBlocks-white.svg"
     steps:
@@ -54,7 +53,8 @@ jobs:
     - name: Generate OS List
       run: |
         export VM=$(cat modules/microblocks/gp/runtime/versions | grep VM | awk '{print $2}')
-        export URL="https://github.com/beagleboard/microblocks-zephyr/releases/download/continuous-release/microblocks_beagleconnect_freedom_dev_${VM}.bin"
+        export OS_LIST_NAME="MicroBlocks VM${VM}"
+        export URL="https://github.com/beagleboard/microblocks-zephyr/releases/download/VM${VM}/microblocks_${{ matrix.board }}_${VM}.bin"
         export SHA=$(sha256sum microblocks_${{ matrix.board }}_${VM}.bin | cut -d " " -f 1)
         export RELEASE_DATE=$(date +"%Y-%m-%d")
         export DEVICE=$(echo ${{ matrix.board }} | sed "s/_/-/g")
