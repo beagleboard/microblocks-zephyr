@@ -1,0 +1,54 @@
+name: Continuous Deployment
+
+on:
+  push:
+    branches: [ "main" ]
+  # Build every Monday
+  schedule:
+    - cron: '0 0 * * 1'
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        version: [dev, pilot]
+        board: [beagleconnect_freedom]
+    name: Build Artifacts - MicroBlocks ${{ matrix.version }} for ${{ matrix.board }}
+    runs-on: ubuntu-22.04
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+      with:
+        path: microblocks
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: 3.11
+
+    - name: Setup Zephyr project
+      uses: zephyrproject-rtos/action-zephyr-setup@v1
+      with:
+        app-path: microblocks
+        toolchains: arm-zephyr-eabi
+        manifest-file-name: west_${{ matrix.version }}.yml
+
+    - name: Link Arduino stream
+      run: ln -srf modules/lib/ArduinoCore-API/api modules/lib/Arduino-Zephyr-API/cores/arduino/.
+
+    - name: Build firmware
+      run: west build -p -b ${{ matrix.board }} microblocks -d build
+
+    - name: Rename firmware
+      run: |
+        VM=$(cat modules/microblocks/gp/runtime/versions | grep VM | awk '{print $2}')
+        mv build/zephyr/zephyr.bin microblocks_${{ matrix.board }}_${{ matrix.version }}_${VM}.bin
+
+    - name: Pre-Release
+      uses: softprops/action-gh-release@v2
+      with:
+        prerelease: true
+        name: Continuous Release
+        tag_name: continuous-release
+        body: Continuous Dev and Pilot builds of MicroBlocks
+        files: microblocks_*.bin
