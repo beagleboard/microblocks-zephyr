@@ -1,0 +1,37 @@
+name: PR Checks
+
+on:
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        version: [dev, pilot, stable]
+        board: [beagleconnect_freedom]
+    name: Build Artifacts - MicroBlocks ${{ matrix.version }} for ${{ matrix.board }}
+    runs-on: ubuntu-22.04
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+      with:
+        path: microblocks
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: 3.11
+
+    - name: Setup Zephyr project
+      uses: zephyrproject-rtos/action-zephyr-setup@v1
+      with:
+        app-path: microblocks
+        toolchains: arm-zephyr-eabi
+        manifest-file-name: west_${{ matrix.version }}.yml
+
+    - name: Link Arduino stream
+      run: ln -srf modules/lib/ArduinoCore-API/api modules/lib/Arduino-Zephyr-API/cores/arduino/.
+
+    - name: Build firmware
+      run: west build -p -b ${{ matrix.board }} microblocks -d build
