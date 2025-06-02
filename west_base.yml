@@ -16,7 +16,7 @@ manifest:
       import:
         name-allowlist:
           - hal_ti
-          - cmsis
+          - cmsis_6
     - name: gsoc-2022-arduino-core
       remote: zephyrproject-rtos
       path: modules/lib/Arduino-Zephyr-API
