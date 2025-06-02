@@ -24,7 +24,7 @@ pip install west cc1352-flasher
 3. Setup Zephyr app:
 
 ```shell
-west init -m https://openbeagle.org/ayush1325/microblocks .
+west init -m https://github.com/beagleboard/microblocks-zephyr.git --mf west_pilot.yml .
 west update
 ```
 
@@ -37,13 +37,13 @@ ln -srf modules/lib/ArduinoCore-API/api modules/lib/Arduino-Zephyr-API/cores/ard
 5. Install python deps
 
 ```shell
-pip install -r zephyr/scripts/requirements-base.txt
+west packages pip --install
 ```
 
 # Build
 
 ```shell
-west build -b beagleconnect_freedom microblocks -p
+west build -b beagleconnect_freedom microblocks-zephyr.git -p
 ```
 
 # Flash
