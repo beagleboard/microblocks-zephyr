@@ -46,7 +46,9 @@ jobs:
     - name: Rename firmware
       run: |
         VM=$(cat modules/microblocks/gp/runtime/versions | grep VM | awk '{print $2}')
-        mv build/zephyr/zephyr.bin microblocks_${{ matrix.board }}_${{ matrix.version }}_${VM}.bin
+        BIN_NAME=microblocks_${{ matrix.board }}_${{ matrix.version }}_${VM}.bin
+        mv build/zephyr/zephyr.bin $BIN_NAME
+        xz -z $BIN_NAME
 
     - name: Pre-Release
       uses: softprops/action-gh-release@v2
@@ -55,16 +57,18 @@ jobs:
         name: Continuous Release
         tag_name: continuous-release
         body: Continuous Dev and Pilot builds of MicroBlocks
-        files: microblocks_*.bin
+        files: microblocks_*.bin.xz
 
     - name: Generate OS List
       run: |
         export VM=$(cat modules/microblocks/gp/runtime/versions | grep VM | awk '{print $2}')
-        export URL="https://github.com/beagleboard/microblocks-zephyr/releases/download/continuous-release/microblocks_beagleconnect_freedom_dev_${VM}.bin"
-        export SHA=$(sha256sum microblocks_${{ matrix.board }}_${{ matrix.version }}_${VM}.bin | cut -d " " -f 1)
+        BIN_NAME=microblocks_${{ matrix.board }}_${{ matrix.version }}_${VM}.bin.xz
+        export URL="https://github.com/beagleboard/microblocks-zephyr/releases/download/continuous-release/${BIN_NAME}"
+        export SHA=$(sha256sum ${BIN_NAME} | cut -d " " -f 1)
         export RELEASE_DATE=$(date +"%Y-%m-%d")
         export DEVICE=$(echo ${{ matrix.board }} | sed "s/_/-/g")
-        jq -n '[ .name = env.OS_LIST_NAME | .description = env.OS_LIST_DESC | .icon = env.OS_LIST_ICON | .devices = [ env.DEVICE ] | .tags = [ "education" ] | .url = env.URL | .image_download_sha256 = env.SHA | .release_date = env.RELEASE_DATE ]' > os_list_${{ matrix.version }}.json
+        EXTRACT_SIZE=$(xz --robot --list ${BIN_NAME} | awk 'END {print $5}')
+        jq -n --argjson extract_size $EXTRACT_SIZE '[ .name = env.OS_LIST_NAME | .description = env.OS_LIST_DESC | .icon = env.OS_LIST_ICON | .devices = [ env.DEVICE ] | .tags = [ "education" ] | .url = env.URL | .image_download_sha256 = env.SHA | .release_date = env.RELEASE_DATE | .extract_size = $extract_size ]' > os_list_${{ matrix.version }}.json
 
     - name: OS List Generation
       uses: softprops/action-gh-release@v2
