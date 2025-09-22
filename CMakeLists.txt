@@ -6,7 +6,10 @@ cmake_path(SET ZephyrBase $ENV{ZEPHYR_BASE})
 
 set(SMALLVM_PATH ../modules/microblocks/vm)
 set(ARDUINO_ZEPHYR_PATH ${ZephyrBase}/../modules/lib/Arduino-Zephyr-API)
-set(EXTRA_DTC_OVERLAY_FILE ${ARDUINO_ZEPHYR_PATH}/variants/${BOARD}/${BOARD}.overlay)
+
+# get value of NORMALIZED_BOARD_TARGET early
+find_package(Zephyr REQUIRED HINTS $ENV{ZEPHYR_BASE} COMPONENTS yaml boards)
+set(EXTRA_DTC_OVERLAY_FILE ${ARDUINO_ZEPHYR_PATH}/variants/${NORMALIZED_BOARD_TARGET}/${NORMALIZED_BOARD_TARGET}.overlay)
 
 find_package(Zephyr REQUIRED HINTS $ENV{ZEPHYR_BASE})
 project(blinky)
