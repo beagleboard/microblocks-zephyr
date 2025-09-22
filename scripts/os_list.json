@@ -2,7 +2,7 @@
 	{
 		"name": "MicroBlocks (Testing)",
 		"description": "MicroBlocks Dev and Pilot Builds",
-		"icon": "https://microblocks.fun/assets/img/logos/MicroBlocks-white.svg",
+		"icon": "https://media.githubusercontent.com/media/beagleboard/bb-imager-rs/refs/heads/main/assets/os/microblocks.svg",
 		"flasher": "BeagleConnectFreedom",
 		"devices": [
 			"beagleconnect-freedom"
