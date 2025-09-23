@@ -17,7 +17,7 @@ jobs:
       OS_LIST_ICON: "https://media.githubusercontent.com/media/beagleboard/bb-imager-rs/refs/heads/main/assets/os/microblocks.svg"
     steps:
     - name: Checkout
-      uses: actions/checkout@v4
+      uses: actions/checkout@v5
       with:
         path: microblocks
 
