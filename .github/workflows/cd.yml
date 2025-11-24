@@ -21,7 +21,7 @@ jobs:
       OS_LIST_ICON: "https://microblocks.fun/assets/img/logos/MicroBlocks-white.svg"
     steps:
     - name: Checkout
-      uses: actions/checkout@v5
+      uses: actions/checkout@v6
       with:
         path: microblocks
 
