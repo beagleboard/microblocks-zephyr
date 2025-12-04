@@ -8,7 +8,7 @@ on:
     - cron: '0 0 * * 1'
 
 jobs:
-  build:
+  build-firmware:
     strategy:
       matrix:
         version: [dev, pilot]
@@ -78,3 +78,24 @@ jobs:
         tag_name: os-list
         body: OS List Files for use with BeagleBoard Imaging Utility
         files: os_list_${{ matrix.version }}.json
+
+  build-os-list-json:
+    name: Build os_list.json
+    runs-on: ubuntu-slim
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+      with:
+        path: microblocks
+
+    - name: OS List Generation
+      run: cp microblocks/os_list.json ./
+
+    - name: OS List Release
+      uses: softprops/action-gh-release@v2
+      with:
+        prerelease: true
+        name: OS List File
+        tag_name: os-list
+        body: OS List File for use with BeagleBoard Imaging Utility
+        files: os_list.json
