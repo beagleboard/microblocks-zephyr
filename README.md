@@ -31,7 +31,7 @@ west update
 4. Setup Arduino module
 
 ```shell
-ln -srf modules/lib/ArduinoCore-API/api modules/lib/Arduino-Zephyr-API/cores/arduino/.
+west blobs fetch arduinocore-zephyr -a
 ```
 
 5. Install python deps

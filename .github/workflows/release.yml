@@ -33,8 +33,8 @@ jobs:
         toolchains: arm-zephyr-eabi
         manifest-file-name: west_stable.yml
 
-    - name: Link Arduino stream
-      run: ln -srf modules/lib/ArduinoCore-API/api modules/lib/Arduino-Zephyr-API/cores/arduino/.
+    - name: Fetch blobs
+      run: west blobs fetch -a
 
     - name: Build firmware
       run: west build -p -b ${{ matrix.board }} microblocks -d build

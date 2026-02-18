@@ -9,7 +9,7 @@ set(ARDUINO_ZEPHYR_PATH ${ZephyrBase}/../modules/lib/Arduino-Zephyr-API)
 
 # get value of NORMALIZED_BOARD_TARGET early
 find_package(Zephyr REQUIRED HINTS $ENV{ZEPHYR_BASE} COMPONENTS yaml boards)
-set(EXTRA_DTC_OVERLAY_FILE ${ARDUINO_ZEPHYR_PATH}/variants/${NORMALIZED_BOARD_TARGET}/${NORMALIZED_BOARD_TARGET}.overlay)
+set(EXTRA_DTC_OVERLAY_FILE ${ARDUINO_ZEPHYR_PATH}/variants/${BOARD}/${BOARD}.overlay)
 
 find_package(Zephyr REQUIRED HINTS $ENV{ZEPHYR_BASE})
 project(blinky)
@@ -18,7 +18,6 @@ target_include_directories(app PRIVATE ${SMALLVM_PATH})
 
 file(GLOB VM ${SMALLVM_PATH}/*.c ${SMALLVM_PATH}/*.cpp)
 target_sources(app PRIVATE ${VM})
-target_sources(app PRIVATE ${ARDUINO_ZEPHYR_PATH}/cores/arduino/api/Stream.cpp)
 
 target_sources_ifdef(CONFIG_LOG app PRIVATE src/log_backend.c)
 
