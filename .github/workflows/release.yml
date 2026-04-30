@@ -57,7 +57,7 @@ jobs:
         export VM=$(cat modules/microblocks/gp/runtime/versions | grep VM | awk '{print $2}')
         BIN_NAME=microblocks_${{ matrix.board }}_${VM}.bin.xz
         export OS_LIST_NAME="MicroBlocks VM${VM}"
-        export URL="https://github.com/beagleboard/microblocks-zephyr/releases/download/VM${VM}/microblocks_${{ matrix.board }}_${VM}.bin"
+        export URL="https://github.com/beagleboard/microblocks-zephyr/releases/download/VM${VM}/microblocks_${{ matrix.board }}_${VM}.bin.xz"
         export SHA=$(sha256sum ${BIN_NAME} | cut -d " " -f 1)
         export RELEASE_DATE=$(date +"%Y-%m-%d")
         export DEVICE=$(echo ${{ matrix.board }} | sed "s/_/-/g")
