@@ -12,7 +12,7 @@ jobs:
     strategy:
       matrix:
         version: [dev, pilot]
-        board: [beagleconnect_freedom]
+        board: [beagleconnect_freedom@C7/cc1352p7]
     name: Build Artifacts - MicroBlocks ${{ matrix.version }} for ${{ matrix.board }}
     runs-on: ubuntu-22.04
     env:
