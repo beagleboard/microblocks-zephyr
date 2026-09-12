@@ -21,3 +21,7 @@ manifest:
       remote: zephyrproject-rtos
       path: modules/lib/Arduino-Zephyr-API
       revision: next
+    - name: smallvm
+      path: modules/microblocks
+      revision: stable
+      url: https://bitbucket.org/john_maloney/smallvm
