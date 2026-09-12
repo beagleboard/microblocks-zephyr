@@ -3,6 +3,9 @@
 import argparse
 import json
 from pathlib import Path
+import datetime
+import hashlib
+import subprocess
 
 DIST = Path("dist/")
 

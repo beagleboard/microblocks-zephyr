@@ -12,9 +12,10 @@ jobs:
   build:
     strategy:
       matrix:
-        - zephyr_board: beagleconnect_freedom@C7/cc1352p7
-          board: beagleconnect-freedom
-    name: Build Artifacts - MicroBlocks stable for ${{ matrix.board }}
+        board:
+          - zephyr: beagleconnect_freedom@C7/cc1352p7
+            out: beagleconnect-freedom
+    name: Build Artifacts - MicroBlocks stable for ${{ matrix.board.out }}
     runs-on: ubuntu-latest
     env:
       OS_LIST_DESC: "MicroBlocks is a blocks programming language for physical computing inspired by Scratch."
@@ -35,20 +36,20 @@ jobs:
       run: west blobs fetch -a
 
     - name: Build firmware
-      run: west build -p -b ${{ matrix.zephyr_board }} microblocks -d build
+      run: west build -p -b ${{ matrix.board.zephyr }} microblocks -d build
 
     - name: Rename and compress firmware
       run: |
         mkdir dist
         VM=$(cat modules/microblocks/gp/runtime/versions | grep VM | awk '{print $2}')
-        BIN_NAME=dist/${{ matrix.board }}.bin
+        BIN_NAME=dist/${{ matrix.board.out }}.bin
         mv build/zephyr/zephyr.bin $BIN_NAME
         xz -z $BIN_NAME
 
     - name: Generate OS List
       run: |
         VM=$(cat modules/microblocks/gp/runtime/versions | grep VM | awk '{print $2}')
-        ./os_list.py ${VM}
+        ./microblocks/os_list.py ${VM}
 
     - name: Upload artifacts
       uses: actions/upload-artifact@v7
